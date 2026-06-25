@@ -133,7 +133,19 @@ namespace wolv::io {
         if (!isValid())
             return -1;
 
-        return pread(m_handle, buffer, size, address);
+        ssize_t acc = 0;
+        while (acc < size) {
+            const auto bytes = pread(m_handle, buffer, size - acc, address);
+            acc += bytes;
+            address += bytes;
+
+            if (bytes != 0x7ffff000) {
+                break;
+            }
+
+            buffer += bytes;
+        }
+        return acc;
     }
 
 
@@ -150,7 +162,20 @@ namespace wolv::io {
             return -1;
 
         m_sizeValid = false;
-        return pwrite(m_handle, buffer, size, address);
+
+        ssize_t acc = 0;
+        while (acc < size) {
+            const auto bytes = pwrite(m_handle, buffer, size - acc, address);
+            acc += bytes;
+            address += bytes;
+
+            if (bytes != 0x7ffff000) {
+                break;
+            }
+
+            buffer += bytes;
+        }
+        return acc;
     }
 
     void File::setSize(u64 size) {
