@@ -12,6 +12,13 @@
     #include <sys/types.h>
     #include <sys/inotify.h>
     #include <poll.h>
+
+    #if !defined(OS_FREEBSD)
+        #define lseek lseek64
+        #define pwrite pwrite64
+        #define pread pread64
+        #define ftruncate ftruncate64
+    #endif
 #endif
 
 namespace wolv::io {
