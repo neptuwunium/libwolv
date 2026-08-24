@@ -78,7 +78,7 @@ namespace wolv::io {
         Result writeU8StringAtomic(u64 address, const std::u8string &string);
 
         [[nodiscard]] size_t getSize() const;
-        void setSize(u64 size);
+        bool setSize(u64 size);
 
         bool flush();
         bool remove();

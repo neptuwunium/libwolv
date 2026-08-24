@@ -168,13 +168,11 @@ namespace wolv::io {
         return acc;
     }
 
-    void File::setSize(u64 size) {
+    bool File::setSize(u64 size) {
         if (!isValid())
-            return;
+            return false;
 
-        if (ftruncate(m_handle, size) < 0) {
-            // Handle error, although there's really nothing to handle.
-        }
+        return ftruncate(m_handle, size) == 0;
     }
 
     void File::updateSize() const {

@@ -187,12 +187,13 @@ namespace wolv::io {
         }
     }
 
-    void File::setSize(u64 size) {
-        if (!isValid()) return;
+    bool File::setSize(u64 size) {
+        if (!isValid()) return false;
 
         this->seek(size);
-        ::SetEndOfFile(m_handle);
+        const bool result = ::SetEndOfFile(m_handle);
         this->updateSize();
+        return result;
     }
 
     void File::updateSize() const {
@@ -211,8 +212,7 @@ namespace wolv::io {
     bool File::flush() {
         if (!isValid()) return false;
 
-        ::FlushFileBuffers(m_handle);
-        return true;
+        return ::FlushFileBuffers(m_handle);
     }
 
     void File::disableBuffering() {
