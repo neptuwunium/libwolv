@@ -73,11 +73,8 @@ namespace wolv::util {
             }
 
             void enqueue(Task &&task) {
-                {
-                    std::unique_lock lock(this->m_mutex);
-                    this->m_tasks.emplace_back(task);
-                }
-
+                std::unique_lock lock(this->m_mutex);
+                this->m_tasks.emplace_back(task);
                 this->m_condition.notify_one();
             }
 
@@ -86,9 +83,8 @@ namespace wolv::util {
                     std::unique_lock lock(this->m_mutex);
                     this->m_stop = true;
                     this->m_stopTasks = true;
+                    this->m_condition.notify_all();
                 }
-
-                this->m_condition.notify_all();
 
                 for (auto &thread : this->m_threads) {
                     if (thread.joinable())
@@ -100,6 +96,7 @@ namespace wolv::util {
                 {
                     std::unique_lock lock(this->m_mutex);
                     this->m_stopTasks = true;
+                    this->m_condition.notify_all();
                 }
 
                 while (m_threadsAvailable.load() != this->m_threads.size()) {
