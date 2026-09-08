@@ -102,6 +102,8 @@ namespace wolv::util {
             } else if (c == '\n') {
                 if (!trimWhitespace) {
                     result.append(spaces, ' ');
+                } else {
+                    result.erase(result.find_last_not_of('\t') + 1);
                 }
 
                 result += c;
@@ -129,6 +131,8 @@ namespace wolv::util {
 
         if (!trimWhitespace) {
             result.append(spaces, ' ');
+        } else {
+            result.erase(result.find_last_not_of('\t') + 1);
         }
 
         return result;
